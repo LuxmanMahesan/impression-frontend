@@ -106,6 +106,14 @@
   input[type='file'] { display: none; }
 }
 
+/* ── Hint format ─────────────────────────────────────────── */
+.hint-format {
+  font-size: .8rem;
+  color: var(--gray-500);
+  font-style: italic;
+  margin-top: -6px;
+}
+
 /* ── Liste fichiers ──────────────────────────────────────── */
 .file-list {
   list-style: none;

@@ -14,8 +14,17 @@
     <label class="file-label" for="file-input" [class.disabled]="depotValide">
       <span class="file-icon">📂</span>
       <span>Sélectionner des fichiers…</span>
-      <input id="file-input" type="file" multiple (change)="surChoixFichiers($event)" [disabled]="depotValide" />
+      <input
+        id="file-input"
+        type="file"
+        multiple
+        accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png,.bmp,.tiff,.tif,.gif,.webp,.txt,.odt,.ods,.odp"
+        (change)="surChoixFichiers($event)"
+        [disabled]="depotValide"
+      />
     </label>
+
+    <p class="hint-format">Formats acceptés : PDF, Word, Excel, PowerPoint, images (JPG, PNG…), texte</p>
 
     @if (fichiers.length) {
       <ul class="file-list">
