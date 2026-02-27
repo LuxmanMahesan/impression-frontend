@@ -13,52 +13,96 @@
 
   <hr />
 
-  <!-- Recherche dépôt -->
-  <div class="card">
-    <h3>Rechercher un dépôt</h3>
+  @if (message()) {
+    <p class="message">{{ message() }}</p>
+  }
 
-    <div class="field-row">
-      <input [(ngModel)]="idDepot" placeholder="UUID du dépôt…" />
-      <button (click)="chargerDepot()">🔍 Charger</button>
+  <!-- Liste des dépôts -->
+  <div class="card">
+    <div class="card-header">
+      <h3>Tous les dépôts</h3>
+      <button (click)="chargerDepots()" [disabled]="chargement()">
+        {{ chargement() ? '⏳ Chargement…' : '🔄 Actualiser' }}
+      </button>
     </div>
 
-    @if (message()) {
-      <p class="message">{{ message() }}</p>
+    @if (!depots().length && !chargement()) {
+      <p class="vide">Aucun dépôt pour le moment.</p>
+    }
+
+    @if (depots().length) {
+      <div class="table-wrapper">
+        <table>
+          <thead>
+          <tr>
+            <th>Référence</th>
+            <th>Statut</th>
+            <th>Fichiers</th>
+            <th>Créé le</th>
+            <th>Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+            @for (d of depots(); track d.codePublic) {
+              <tr [class.row-valide]="d.statut === 'VALIDE'" [class.row-brouillon]="d.statut === 'BROUILLON'">
+                <td>
+                  <code class="code-ref">{{ d.codePublic }}</code>
+                </td>
+                <td>
+                  <span class="badge" [class.badge-valide]="d.statut === 'VALIDE'" [class.badge-brouillon]="d.statut === 'BROUILLON'">
+                    {{ d.statut }}
+                  </span>
+                </td>
+                <td class="center">{{ d.nbFichiers }}</td>
+                <td>{{ d.creeLe | date:'dd/MM/yyyy HH:mm' }}</td>
+                <td class="actions">
+                  <button (click)="voirDetail(d.codePublic)" class="btn-sm">📂 Voir</button>
+                  @if (confirmationSuppression() === d.codePublic) {
+                    <span class="confirm-group">
+                      <span class="confirm-text">Supprimer ?</span>
+                      <button (click)="confirmerSuppression(d.codePublic)" class="btn-sm btn-danger">Oui</button>
+                      <button (click)="annulerSuppression()" class="btn-sm btn-secondary">Non</button>
+                    </span>
+                  } @else {
+                    <button (click)="demanderSuppression(d.codePublic)" class="btn-sm btn-danger">🗑️</button>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
     }
   </div>
 
-  <!-- Résultat -->
-  @if (depotCharge()) {
-    <div class="card depot-result">
-      <div class="depot-meta">
+  <!-- Détail du dépôt sélectionné -->
+  @if (depotDetail()) {
+    <div class="card depot-detail">
+      <div class="detail-header">
         <div>
-          <span class="meta-label">ID</span>
-          <code>{{ depotCharge()!.idDepot }}</code>
-        </div>
-        <div>
-          <span class="meta-label">Statut</span>
-          <span class="badge" [class.badge-valide]="depotCharge()!.statut === 'VALIDE'">
-            {{ depotCharge()!.statut }}
+          <h3>Dépôt <code>{{ depotDetail()!.idDepot }}</code></h3>
+          <span class="badge" [class.badge-valide]="depotDetail()!.statut === 'VALIDE'">
+            {{ depotDetail()!.statut }}
           </span>
         </div>
+        <button (click)="fermerDetail()" class="btn-secondary btn-sm">✕ Fermer</button>
       </div>
 
       <hr />
 
-      <h3>Fichiers ({{ depotCharge()!.fichiers.length }})</h3>
+      <h4>Fichiers ({{ depotDetail()!.fichiers.length }})</h4>
 
-      @if (!depotCharge()!.fichiers.length) {
+      @if (!depotDetail()!.fichiers.length) {
         <p class="vide">Aucun fichier dans ce dépôt.</p>
       } @else {
         <ul class="fichier-list">
-          @for (f of depotCharge()!.fichiers; track f.idFichier) {
+          @for (f of depotDetail()!.fichiers; track f.idFichier) {
             <li>
               <div class="fichier-info">
                 <span class="fichier-nom">{{ f.nom }}</span>
                 <span class="fichier-meta">{{ f.typeMime }} · {{ (f.taille / 1024).toFixed(0) }} Ko</span>
-                <span class="fichier-id">{{ f.idFichier }}</span>
               </div>
-              <button (click)="telechargerFichier(f.idFichier, f.nom)">⬇️ Télécharger</button>
+              <button (click)="telechargerFichier(f.idFichier, f.nom)" class="btn-sm">⬇️ Télécharger</button>
             </li>
           }
         </ul>

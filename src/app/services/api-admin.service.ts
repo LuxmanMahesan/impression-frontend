@@ -6,6 +6,14 @@ export interface ReponseCodeCourant {
   code: string;
 }
 
+export interface ReponseDepotResume {
+  codePublic: string;
+  statut: string;
+  creeLe: string;
+  valideLe: string | null;
+  nbFichiers: number;
+}
+
 export interface ReponseFichierAdmin {
   idFichier: string;
   nom: string;
@@ -27,13 +35,21 @@ export class ApiAdminService {
     return this.http.get<ReponseCodeCourant>('/api/admin/code-courant');
   }
 
-  depot(idDepot: string): Observable<ReponseDepotAdmin> {
-    return this.http.get<ReponseDepotAdmin>(`/api/admin/depots/${idDepot}`);
+  listerDepots(): Observable<ReponseDepotResume[]> {
+    return this.http.get<ReponseDepotResume[]>('/api/admin/depots');
   }
 
-  telechargerFichier(idDepot: string, idFichier: string): Observable<Blob> {
+  depot(codePublic: string): Observable<ReponseDepotAdmin> {
+    return this.http.get<ReponseDepotAdmin>(`/api/admin/depots/${codePublic}`);
+  }
+
+  supprimerDepot(codePublic: string): Observable<any> {
+    return this.http.delete(`/api/admin/depots/${codePublic}`);
+  }
+
+  telechargerFichier(codePublic: string, idFichier: string): Observable<Blob> {
     return this.http.get(
-      `/api/admin/depots/${idDepot}/fichiers/${idFichier}/telechargement`,
+      `/api/admin/depots/${codePublic}/fichiers/${idFichier}/telechargement`,
       { responseType: 'blob' }
     );
   }

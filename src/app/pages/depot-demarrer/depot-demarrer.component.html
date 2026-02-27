@@ -83,9 +83,9 @@
     }
 
     <div class="depot-id-info" [class.valide]="depotValide()">
-      <span class="label-id">{{ depotValide() ? '✅ Dépôt validé — ID' : 'ID de votre dépôt' }}</span>
-      <code>{{ idDepot() }}</code>
-      <p class="hint">Conservez cet identifiant et communiquez-le au magasin.</p>
+      <span class="label-id">{{ depotValide() ? '✅ Dépôt validé — Référence' : 'Référence de votre dépôt' }}</span>
+      <code class="code-public">{{ idDepot() }}</code>
+      <p class="hint">Communiquez cette référence au magasin pour récupérer vos impressions.</p>
     </div>
   }
 

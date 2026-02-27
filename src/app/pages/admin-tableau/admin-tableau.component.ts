@@ -1,20 +1,27 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ApiAdminService, ReponseDepotAdmin } from '../../services/api-admin.service';
+import { DatePipe } from '@angular/common';
+import {
+  ApiAdminService,
+  ReponseDepotResume,
+  ReponseDepotAdmin,
+} from '../../services/api-admin.service';
 
 @Component({
   selector: 'app-admin-tableau',
   standalone: true,
   templateUrl: './admin-tableau.component.html',
   styleUrl: './admin-tableau.component.scss',
-  imports: [FormsModule],
+  imports: [FormsModule, DatePipe],
 })
 export class AdminTableauComponent implements OnInit {
   codeDuJour = signal('…');
-  idDepot = '';
+  depots = signal<ReponseDepotResume[]>([]);
+  depotDetail = signal<ReponseDepotAdmin | null>(null);
   message = signal('');
-  depotCharge = signal<ReponseDepotAdmin | null>(null);
+  chargement = signal(false);
+  confirmationSuppression = signal('');
 
   constructor(private api: ApiAdminService, private routeur: Router) {}
 
@@ -32,6 +39,8 @@ export class AdminTableauComponent implements OnInit {
         this.routeur.navigateByUrl('/admin/connexion');
       },
     });
+
+    this.chargerDepots();
   }
 
   deconnexion() {
@@ -39,29 +48,41 @@ export class AdminTableauComponent implements OnInit {
     this.routeur.navigateByUrl('/admin/connexion');
   }
 
-  chargerDepot() {
-    this.message.set('');
-    this.depotCharge.set(null);
-
-    if (!this.idDepot) {
-      this.message.set('Entre un ID de dépôt.');
-      return;
-    }
-
-    this.api.depot(this.idDepot).subscribe({
-      next: (d) => {
-        this.depotCharge.set(d);
-        this.message.set('Dépôt chargé ✅');
+  chargerDepots() {
+    this.chargement.set(true);
+    this.api.listerDepots().subscribe({
+      next: (liste) => {
+        this.depots.set(liste);
+        this.chargement.set(false);
       },
-      error: () => this.message.set('Dépôt introuvable / erreur serveur ❌'),
+      error: () => {
+        this.message.set('Erreur chargement des dépôts ❌');
+        this.chargement.set(false);
+      },
     });
   }
 
-  telechargerFichier(idFichier: string, nomOriginal: string) {
+  voirDetail(codePublic: string) {
+    this.depotDetail.set(null);
     this.message.set('');
-    if (!this.idDepot) return;
+    this.confirmationSuppression.set('');
 
-    this.api.telechargerFichier(this.idDepot, idFichier).subscribe({
+    this.api.depot(codePublic).subscribe({
+      next: (d) => this.depotDetail.set(d),
+      error: () => this.message.set('Erreur chargement détail ❌'),
+    });
+  }
+
+  fermerDetail() {
+    this.depotDetail.set(null);
+    this.confirmationSuppression.set('');
+  }
+
+  telechargerFichier(idFichier: string, nomOriginal: string) {
+    const detail = this.depotDetail();
+    if (!detail) return;
+
+    this.api.telechargerFichier(detail.idDepot, idFichier).subscribe({
       next: (blob) => {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -69,9 +90,28 @@ export class AdminTableauComponent implements OnInit {
         a.download = nomOriginal || `fichier-${idFichier}`;
         a.click();
         window.URL.revokeObjectURL(url);
-        this.message.set('Téléchargement lancé ✅');
       },
       error: () => this.message.set('Erreur téléchargement ❌'),
+    });
+  }
+
+  demanderSuppression(codePublic: string) {
+    this.confirmationSuppression.set(codePublic);
+  }
+
+  annulerSuppression() {
+    this.confirmationSuppression.set('');
+  }
+
+  confirmerSuppression(codePublic: string) {
+    this.api.supprimerDepot(codePublic).subscribe({
+      next: () => {
+        this.confirmationSuppression.set('');
+        this.depotDetail.set(null);
+        this.message.set('Dépôt ' + codePublic + ' supprimé ✅');
+        this.chargerDepots();
+      },
+      error: () => this.message.set('Erreur suppression ❌'),
     });
   }
 }
