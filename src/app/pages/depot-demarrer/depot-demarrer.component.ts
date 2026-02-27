@@ -24,7 +24,6 @@ export class DepotDemarrerComponent {
 
   demarrer() {
     this.message = '';
-    this.idDepot = '';
     this.fichiers = [];
     this.depotValide = false;
 
@@ -35,15 +34,17 @@ export class DepotDemarrerComponent {
 
     this.chargementCode = true;
 
-    this.apiDepot.demarrerDepot(this.code).subscribe({
+    this.apiDepot.demarrerDepot(this.code.trim()).subscribe({
       next: (r) => {
         this.idDepot = r.idDepot;
         this.message = 'Dépôt démarré ✅';
         this.chargementCode = false;
       },
-      error: () => {
-        this.message = 'Code invalide ❌';
+      error: (err) => {
+        console.error('Erreur demarrer:', err);
+        this.message = 'Code invalide ou erreur serveur ❌';
         this.chargementCode = false;
+        // L'utilisateur peut corriger le code et réessayer
       },
     });
   }
@@ -72,7 +73,8 @@ export class DepotDemarrerComponent {
         this.message = 'Upload terminé ✅';
         this.chargementUpload = false;
       },
-      error: () => {
+      error: (err) => {
+        console.error('Erreur upload:', err);
         this.message = 'Erreur upload ❌';
         this.chargementUpload = false;
       },
@@ -92,7 +94,8 @@ export class DepotDemarrerComponent {
         this.chargementValidation = false;
         this.message = 'Dépôt validé ✅ Communiquez cet identifiant au magasin.';
       },
-      error: () => {
+      error: (err) => {
+        console.error('Erreur validation:', err);
         this.chargementValidation = false;
         this.message = 'Erreur validation ❌';
       },

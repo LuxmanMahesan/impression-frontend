@@ -18,8 +18,8 @@
     <div class="field-row">
       <input
         [(ngModel)]="code"
-        placeholder="Ex : 483459"
-        [disabled]="!!idDepot || chargementCode"
+        placeholder="Ex : 4839"
+        [disabled]="!!idDepot"
       />
       <button (click)="demarrer()" [disabled]="!!idDepot || !code || chargementCode">
         {{ chargementCode ? '⏳ Vérification…' : 'Démarrer' }}
