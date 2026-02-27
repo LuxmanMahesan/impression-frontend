@@ -1,29 +1,41 @@
-<h2>Dépôt - Upload fichiers</h2>
+<div class="card">
 
-<p><b>ID dépôt :</b> {{ idDepot }}</p>
+  <div class="page-header">
+    <button class="btn-secondary" (click)="retour()">← Retour</button>
+    <div>
+      <h2>Uploader des fichiers</h2>
+      <p class="depot-id">Dépôt : <code>{{ idDepot }}</code></p>
+    </div>
+  </div>
 
-<div class="bloc">
-  <label>Choisir des fichiers</label>
-  <input type="file" multiple (change)="surChoixFichiers($event)" />
+  <hr />
 
-  <div class="liste" *ngIf="fichiers?.length">
-    <p><b>Fichiers sélectionnés :</b></p>
-    <ul>
-      <li *ngFor="let f of fichiers">{{ f.name }} ({{ f.size }} octets)</li>
+  <div class="etape">
+    <label class="file-label" for="file-input">
+      <span class="file-icon">📂</span>
+      <span>Sélectionner des fichiers…</span>
+      <input id="file-input" type="file" multiple (change)="surChoixFichiers($event)" />
+    </label>
+
+    <ul class="file-list" *ngIf="fichiers.length">
+      <li *ngFor="let f of fichiers">
+        <span class="file-name">{{ f.name }}</span>
+        <span class="file-size">{{ (f.size / 1024).toFixed(0) }} Ko</span>
+      </li>
     </ul>
   </div>
 
+  <hr />
+
   <div class="boutons">
     <button (click)="uploader()" [disabled]="!fichiers.length || enCours">
-      {{ enCours ? 'Upload...' : 'Uploader' }}
+      {{ enCours ? '⏳ Upload en cours…' : '⬆️ Uploader' }}
     </button>
-
-    <button (click)="valider()" [disabled]="!idDepot || enCours">
-      Valider le dépôt
+    <button class="btn-valider" (click)="valider()" [disabled]="!idDepot || enCours">
+      ✅ Valider le dépôt
     </button>
-
-    <button (click)="retour()">Retour</button>
   </div>
 
   <p class="message" *ngIf="message">{{ message }}</p>
+
 </div>

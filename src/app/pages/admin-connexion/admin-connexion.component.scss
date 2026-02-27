@@ -1,19 +1,35 @@
-:host {
-  display: block;
-  max-width: 420px;
+.login-wrapper {
+  display: flex;
+  justify-content: center;
+  padding-top: 20px;
 }
 
-input {
+.login-card {
   width: 100%;
-  margin: 6px 0 12px 0;
-  padding: 10px;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
-button {
-  padding: 10px;
-  cursor: pointer;
+.login-header {
+  text-align: center;
+
+  .login-icon { font-size: 2.4rem; display: block; margin-bottom: 8px; }
+  h2 { margin-bottom: 4px; }
+  .login-sub { font-size: .88rem; color: var(--gray-500); }
 }
 
-.message {
-  margin-top: 10px;
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.btn-login {
+  width: 100%;
+  justify-content: center;
+  padding: 12px;
+  font-size: 1rem;
+  margin-top: 4px;
 }

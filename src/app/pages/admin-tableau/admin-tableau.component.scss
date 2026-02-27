@@ -1,23 +1,131 @@
-.boutons {
-  margin-top: 10px;
+.admin-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ── Topbar ──────────────────────────────────────────────── */
+.admin-topbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+
+  h2 { margin-bottom: 4px; }
+  .code-jour {
+    font-size: .9rem;
+    color: var(--gray-500);
+    strong { color: var(--primary); font-size: 1rem; }
+  }
+}
+
+/* ── Recherche ───────────────────────────────────────────── */
+.field-row {
   display: flex;
   gap: 10px;
-  flex-wrap: wrap;
+  margin-top: 12px;
+
+  input { flex: 1; }
 }
 
-.message {
-  margin-top: 10px;
-}
+/* ── Dépôt résultat ──────────────────────────────────────── */
+.depot-result { margin-top: 0; }
 
-.ligne-fichier {
+.depot-meta {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  padding: 8px 0;
+  gap: 32px;
+  flex-wrap: wrap;
+
+  .meta-label {
+    display: block;
+    font-size: .75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--gray-500);
+    margin-bottom: 3px;
+  }
+
+  code {
+    font-family: 'Courier New', monospace;
+    font-size: .85rem;
+    color: var(--gray-900);
+  }
 }
 
-.mini {
-  font-size: 12px;
-  opacity: 0.8;
+/* ── Badge statut ────────────────────────────────────────── */
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: .8rem;
+  font-weight: 600;
+  background: var(--gray-200);
+  color: var(--gray-700);
+
+  &.badge-valide {
+    background: #dcfce7;
+    color: #15803d;
+  }
+}
+
+/* ── Liste fichiers ──────────────────────────────────────── */
+.vide {
+  color: var(--gray-500);
+  font-style: italic;
+  font-size: .9rem;
+  margin-top: 8px;
+}
+
+.fichier-list {
+  list-style: none;
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    flex-wrap: wrap;
+  }
+
+  button {
+    flex-shrink: 0;
+    padding: 7px 14px;
+    font-size: .82rem;
+  }
+}
+
+.fichier-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.fichier-nom {
+  font-weight: 600;
+  font-size: .92rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fichier-meta {
+  font-size: .8rem;
+  color: var(--gray-500);
+}
+
+.fichier-id {
+  font-size: .75rem;
+  color: var(--gray-300);
+  font-family: 'Courier New', monospace;
 }

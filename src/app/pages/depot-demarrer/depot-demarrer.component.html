@@ -1,21 +1,83 @@
-<h2>Dépôt client</h2>
+<div class="hero">
+  <div class="hero-icon">🖨️</div>
+  <h1>Déposez vos fichiers à imprimer</h1>
+  <p class="hero-sub">
+    Entrez le code du jour remis par notre équipe, puis déposez vos documents.
+    Nous nous occupons du reste.
+  </p>
+</div>
 
-<div class="bloc">
-  <label>Code du jour</label>
-  <input [(ngModel)]="code" placeholder="000000" />
-  <button (click)="demarrer()">Démarrer le dépôt</button>
+<div class="card depot-card">
+
+  <!-- Étape 1 : code -->
+  <div class="etape">
+    <div class="etape-header">
+      <span class="etape-num">1</span>
+      <span>Saisir le code du jour</span>
+    </div>
+    <div class="field-row">
+      <input
+        [(ngModel)]="code"
+        placeholder="Ex : 483920"
+        maxlength="6"
+        [disabled]="!!idDepot"
+      />
+      <button (click)="demarrer()" [disabled]="!!idDepot || !code">
+        Démarrer
+      </button>
+    </div>
+  </div>
 
   <p class="message" *ngIf="message">{{ message }}</p>
 
-  <div *ngIf="idDepot" class="zone-depot">
-    <p><b>ID dépôt :</b> {{ idDepot }}</p>
+  <!-- Étape 2 : fichiers -->
+  <ng-container *ngIf="idDepot">
+    <hr />
 
-    <label>Fichiers</label>
-    <input type="file" multiple (change)="surChoixFichiers($event)" />
+    <div class="etape">
+      <div class="etape-header">
+        <span class="etape-num">2</span>
+        <span>Choisir vos fichiers</span>
+      </div>
 
-    <div class="boutons">
-      <button (click)="envoyerFichiers()" [disabled]="!fichiers?.length">Uploader</button>
-      <button (click)="valider()" [disabled]="!idDepot">Valider le dépôt</button>
+      <label class="file-label" for="file-input">
+        <span class="file-icon">📂</span>
+        <span>Sélectionner des fichiers…</span>
+        <input id="file-input" type="file" multiple (change)="surChoixFichiers($event)" />
+      </label>
+
+      <ul class="file-list" *ngIf="fichiers.length">
+        <li *ngFor="let f of fichiers">
+          <span class="file-name">{{ f.name }}</span>
+          <span class="file-size">{{ (f.size / 1024).toFixed(0) }} Ko</span>
+        </li>
+      </ul>
     </div>
-  </div>
+
+    <hr />
+
+    <!-- Étape 3 : actions -->
+    <div class="etape">
+      <div class="etape-header">
+        <span class="etape-num">3</span>
+        <span>Envoyer et valider</span>
+      </div>
+
+      <div class="boutons">
+        <button (click)="envoyerFichiers()" [disabled]="!fichiers.length">
+          ⬆️ Uploader les fichiers
+        </button>
+        <button (click)="valider()" class="btn-valider" [disabled]="!idDepot">
+          ✅ Valider le dépôt
+        </button>
+      </div>
+    </div>
+
+    <div class="depot-id-info" *ngIf="idDepot">
+      <span class="label-id">ID de votre dépôt</span>
+      <code>{{ idDepot }}</code>
+      <p class="hint">Conservez cet identifiant et communiquez-le au magasin.</p>
+    </div>
+  </ng-container>
+
 </div>

@@ -1,14 +1,24 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 
-export const intercepteurAuthAdmin: HttpInterceptorFn = (requete, suite) => {
-  const jeton = localStorage.getItem('authAdmin');
+export const intercepteurAuthAdmin: HttpInterceptorFn = (requete, suivant) => {
+  const url = requete.url;
 
-  // On n’ajoute l’Authorization que pour les routes admin
-  if (jeton && requete.url.startsWith('/api/admin')) {
-    requete = requete.clone({
-      setHeaders: { Authorization: `Basic ${jeton}` },
-    });
+  const estEndpointAdmin =
+    url.startsWith('/api/admin') ||
+    (url.includes('://') && url.includes('/api/admin'));
+
+  if (!estEndpointAdmin) {
+    return suivant(requete);
   }
 
-  return suite(requete);
+  const auth = localStorage.getItem('authAdmin'); // "Basic xxxxx"
+  if (!auth) {
+    return suivant(requete);
+  }
+
+  return suivant(
+    requete.clone({
+      setHeaders: { Authorization: auth },
+    })
+  );
 };

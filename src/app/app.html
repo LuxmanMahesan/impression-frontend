@@ -1,1 +1,19 @@
-<router-outlet></router-outlet>
+<header class="app-header">
+  <div class="header-inner">
+    <div class="logo">
+      🖨️ <span>ImpressionShop</span>
+    </div>
+    <nav class="header-nav">
+      <a routerLink="/depot">Déposer des fichiers</a>
+      <a routerLink="/admin/connexion" class="admin-link">Espace admin</a>
+    </nav>
+  </div>
+</header>
+
+<main class="app-main">
+  <router-outlet></router-outlet>
+</main>
+
+<footer class="app-footer">
+  <p>© 2025 ImpressionShop — Tous droits réservés</p>
+</footer>

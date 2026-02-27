@@ -1,0 +1,68 @@
+/* ── Header ──────────────────────────────────────────────── */
+.app-header {
+  background: #fff;
+  border-bottom: 1.5px solid var(--gray-200);
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  span { color: var(--gray-900); }
+}
+
+.header-nav {
+  display: flex;
+  gap: 24px;
+
+  a {
+    font-size: .9rem;
+    font-weight: 500;
+    color: var(--gray-700);
+    text-decoration: none;
+    transition: color .18s;
+    &:hover { color: var(--primary); }
+  }
+
+  .admin-link {
+    color: var(--gray-500);
+    font-size: .82rem;
+  }
+}
+
+/* ── Main ────────────────────────────────────────────────── */
+.app-main {
+  flex: 1;
+  max-width: 1000px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 40px 24px;
+}
+
+/* ── Footer ──────────────────────────────────────────────── */
+.app-footer {
+  text-align: center;
+  padding: 18px;
+  font-size: .8rem;
+  color: var(--gray-500);
+  border-top: 1.5px solid var(--gray-200);
+  background: #fff;
+}

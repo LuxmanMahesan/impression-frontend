@@ -1,11 +1,25 @@
-<h2>Admin - Connexion</h2>
+<div class="login-wrapper">
+  <div class="card login-card">
+    <div class="login-header">
+      <span class="login-icon">🔐</span>
+      <h2>Espace Administrateur</h2>
+      <p class="login-sub">Accès réservé au personnel du magasin</p>
+    </div>
 
-<label>Identifiant</label>
-<input [(ngModel)]="identifiant" />
+    <div class="field">
+      <label for="id-input">Identifiant</label>
+      <input id="id-input" [(ngModel)]="identifiant" autocomplete="username" />
+    </div>
 
-<label>Mot de passe</label>
-<input [(ngModel)]="motDePasse" type="password" />
+    <div class="field">
+      <label for="pwd-input">Mot de passe</label>
+      <input id="pwd-input" [(ngModel)]="motDePasse" type="password" autocomplete="current-password" />
+    </div>
 
-<button (click)="connecter()">Se connecter</button>
+    <button (click)="connecter()" class="btn-login">
+      Se connecter →
+    </button>
 
-<p class="message" *ngIf="message">{{ message }}</p>
+    <p class="message" *ngIf="message">{{ message }}</p>
+  </div>
+</div>

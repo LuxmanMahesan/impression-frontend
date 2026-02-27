@@ -1,21 +1,89 @@
-.bloc {
+.card {
   max-width: 720px;
+  margin: 0 auto;
+}
+
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+
+  button { flex-shrink: 0; }
+
+  h2 { margin-bottom: 4px; }
+
+  .depot-id {
+    font-size: .82rem;
+    color: var(--gray-500);
+    code {
+      font-family: 'Courier New', monospace;
+      font-size: .82rem;
+      color: var(--gray-700);
+    }
+  }
+}
+
+.etape {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 }
 
-input[type='file'] {
-  padding: 6px 0;
+.file-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 20px;
+  border: 2px dashed var(--gray-300);
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: .9rem;
+  font-weight: 500;
+  color: var(--gray-700);
+  background: var(--gray-50);
+  text-transform: none;
+  letter-spacing: normal;
+  transition: border-color .18s, background .18s;
+
+  &:hover {
+    border-color: var(--primary);
+    background: var(--primary-light);
+    color: var(--primary);
+  }
+
+  .file-icon { font-size: 1.3rem; }
+  input[type='file'] { display: none; }
 }
 
-.liste {
-  border-top: 1px solid #ddd;
-  padding-top: 10px;
-}
+.file-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 
-ul {
-  margin: 6px 0 0 18px;
+  li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: var(--gray-100);
+    border-radius: 8px;
+    font-size: .88rem;
+  }
+
+  .file-name {
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 500px;
+  }
+
+  .file-size {
+    color: var(--gray-500);
+    font-size: .82rem;
+    flex-shrink: 0;
+  }
 }
 
 .boutons {
@@ -24,11 +92,7 @@ ul {
   flex-wrap: wrap;
 }
 
-button {
-  padding: 10px;
-  cursor: pointer;
-}
-
-.message {
-  margin-top: 10px;
+.btn-valider {
+  background: var(--success);
+  &:hover:not(:disabled) { background: #15803d; }
 }
