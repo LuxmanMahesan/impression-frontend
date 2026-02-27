@@ -1,0 +1,29 @@
+<h2>Dépôt - Upload fichiers</h2>
+
+<p><b>ID dépôt :</b> {{ idDepot }}</p>
+
+<div class="bloc">
+  <label>Choisir des fichiers</label>
+  <input type="file" multiple (change)="surChoixFichiers($event)" />
+
+  <div class="liste" *ngIf="fichiers?.length">
+    <p><b>Fichiers sélectionnés :</b></p>
+    <ul>
+      <li *ngFor="let f of fichiers">{{ f.name }} ({{ f.size }} octets)</li>
+    </ul>
+  </div>
+
+  <div class="boutons">
+    <button (click)="uploader()" [disabled]="!fichiers.length || enCours">
+      {{ enCours ? 'Upload...' : 'Uploader' }}
+    </button>
+
+    <button (click)="valider()" [disabled]="!idDepot || enCours">
+      Valider le dépôt
+    </button>
+
+    <button (click)="retour()">Retour</button>
+  </div>
+
+  <p class="message" *ngIf="message">{{ message }}</p>
+</div>

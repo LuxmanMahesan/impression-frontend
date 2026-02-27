@@ -1,0 +1,23 @@
+.boutons {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.message {
+  margin-top: 10px;
+}
+
+.ligne-fichier {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.mini {
+  font-size: 12px;
+  opacity: 0.8;
+}

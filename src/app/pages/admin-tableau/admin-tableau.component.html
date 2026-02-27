@@ -1,0 +1,38 @@
+<h2>Admin - Tableau</h2>
+
+<p><b>Code du jour :</b> {{ codeDuJour }}</p>
+
+<hr />
+
+<label>ID dépôt</label>
+<input [(ngModel)]="idDepot" placeholder="UUID..." />
+
+<div class="boutons">
+  <button (click)="chargerDepot()">Charger dépôt</button>
+  <button (click)="deconnexion()">Déconnexion</button>
+</div>
+
+<p class="message" *ngIf="message">{{ message }}</p>
+
+<div *ngIf="depotCharge">
+  <hr />
+  <p><b>Statut :</b> {{ depotCharge.statut }}</p>
+
+  <h3>Fichiers</h3>
+
+  <p *ngIf="!depotCharge.fichiers.length">Aucun fichier.</p>
+
+  <ul *ngIf="depotCharge.fichiers.length">
+    <li *ngFor="let f of depotCharge.fichiers">
+      <div class="ligne-fichier">
+        <div>
+          <b>{{ f.nom }}</b>
+          <span class="mini"> — {{ f.typeMime }} — {{ f.taille }} octets</span>
+          <div class="mini">idFichier : {{ f.idFichier }}</div>
+        </div>
+
+        <button (click)="telechargerFichier(f.idFichier, f.nom)">Télécharger</button>
+      </div>
+    </li>
+  </ul>
+</div>

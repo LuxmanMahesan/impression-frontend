@@ -1,0 +1,21 @@
+<h2>Dépôt client</h2>
+
+<div class="bloc">
+  <label>Code du jour</label>
+  <input [(ngModel)]="code" placeholder="000000" />
+  <button (click)="demarrer()">Démarrer le dépôt</button>
+
+  <p class="message" *ngIf="message">{{ message }}</p>
+
+  <div *ngIf="idDepot" class="zone-depot">
+    <p><b>ID dépôt :</b> {{ idDepot }}</p>
+
+    <label>Fichiers</label>
+    <input type="file" multiple (change)="surChoixFichiers($event)" />
+
+    <div class="boutons">
+      <button (click)="envoyerFichiers()" [disabled]="!fichiers?.length">Uploader</button>
+      <button (click)="valider()" [disabled]="!idDepot">Valider le dépôt</button>
+    </div>
+  </div>
+</div>

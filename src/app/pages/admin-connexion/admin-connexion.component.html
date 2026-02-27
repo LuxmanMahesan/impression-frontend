@@ -1,0 +1,11 @@
+<h2>Admin - Connexion</h2>
+
+<label>Identifiant</label>
+<input [(ngModel)]="identifiant" />
+
+<label>Mot de passe</label>
+<input [(ngModel)]="motDePasse" type="password" />
+
+<button (click)="connecter()">Se connecter</button>
+
+<p class="message" *ngIf="message">{{ message }}</p>
