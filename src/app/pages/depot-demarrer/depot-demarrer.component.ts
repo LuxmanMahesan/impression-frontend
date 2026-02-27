@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ApiDepotService } from '../../services/api-depot.service';
 
@@ -11,40 +11,50 @@ import { ApiDepotService } from '../../services/api-depot.service';
 })
 export class DepotDemarrerComponent {
   code = '';
-  idDepot = '';
-  message = '';
+  idDepot = signal('');
+  message = signal('');
   fichiers: File[] = [];
 
-  chargementCode = false;
-  chargementUpload = false;
-  chargementValidation = false;
-  depotValide = false;
+  chargementCode = signal(false);
+  chargementUpload = signal(false);
+  chargementValidation = signal(false);
+  depotValide = signal(false);
 
-  constructor(private apiDepot: ApiDepotService) {}
+  constructor(
+    private apiDepot: ApiDepotService,
+    private cdr: ChangeDetectorRef,
+  ) {}
 
   demarrer() {
-    this.message = '';
+    this.message.set('');
     this.fichiers = [];
-    this.depotValide = false;
+    this.depotValide.set(false);
 
     if (!this.code) {
-      this.message = 'Entre le code du jour.';
+      this.message.set('Entre le code du jour.');
       return;
     }
 
-    this.chargementCode = true;
+    this.chargementCode.set(true);
 
     this.apiDepot.demarrerDepot(this.code.trim()).subscribe({
-      next: (r) => {
-        this.idDepot = r.idDepot;
-        this.message = 'Dépôt démarré ✅';
-        this.chargementCode = false;
+      next: (r: any) => {
+        const id = r.idDepot || r.id || '';
+        console.log('Dépôt créé:', id);
+        this.idDepot.set(id);
+        this.chargementCode.set(false);
+        if (id) {
+          this.message.set('Dépôt démarré ✅');
+        } else {
+          this.message.set('Réponse serveur inattendue ❌');
+        }
+        this.cdr.detectChanges();
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Erreur demarrer:', err);
-        this.message = 'Code invalide ou erreur serveur ❌';
-        this.chargementCode = false;
-        // L'utilisateur peut corriger le code et réessayer
+        this.message.set('Code invalide ou erreur serveur ❌');
+        this.chargementCode.set(false);
+        this.cdr.detectChanges();
       },
     });
   }
@@ -55,49 +65,53 @@ export class DepotDemarrerComponent {
   }
 
   envoyerFichiers() {
-    this.message = '';
+    this.message.set('');
 
-    if (!this.idDepot) {
-      this.message = 'Démarre le dépôt avant.';
+    if (!this.idDepot()) {
+      this.message.set('Démarre le dépôt avant.');
       return;
     }
     if (!this.fichiers.length) {
-      this.message = 'Choisis au moins un fichier.';
+      this.message.set('Choisis au moins un fichier.');
       return;
     }
 
-    this.chargementUpload = true;
+    this.chargementUpload.set(true);
 
-    this.apiDepot.televerserFichiers(this.idDepot, this.fichiers).subscribe({
+    this.apiDepot.televerserFichiers(this.idDepot(), this.fichiers).subscribe({
       next: () => {
-        this.message = 'Upload terminé ✅';
-        this.chargementUpload = false;
+        this.message.set('Upload terminé ✅');
+        this.chargementUpload.set(false);
+        this.cdr.detectChanges();
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Erreur upload:', err);
-        this.message = 'Erreur upload ❌';
-        this.chargementUpload = false;
+        this.message.set('Erreur upload ❌');
+        this.chargementUpload.set(false);
+        this.cdr.detectChanges();
       },
     });
   }
 
   valider() {
-    this.message = '';
+    this.message.set('');
 
-    if (!this.idDepot || this.depotValide) return;
+    if (!this.idDepot() || this.depotValide()) return;
 
-    this.chargementValidation = true;
+    this.chargementValidation.set(true);
 
-    this.apiDepot.validerDepot(this.idDepot).subscribe({
+    this.apiDepot.validerDepot(this.idDepot()).subscribe({
       next: () => {
-        this.depotValide = true;
-        this.chargementValidation = false;
-        this.message = 'Dépôt validé ✅ Communiquez cet identifiant au magasin.';
+        this.depotValide.set(true);
+        this.chargementValidation.set(false);
+        this.message.set('Dépôt validé ✅ Communiquez cet identifiant au magasin.');
+        this.cdr.detectChanges();
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Erreur validation:', err);
-        this.chargementValidation = false;
-        this.message = 'Erreur validation ❌';
+        this.chargementValidation.set(false);
+        this.message.set('Erreur validation ❌');
+        this.cdr.detectChanges();
       },
     });
   }

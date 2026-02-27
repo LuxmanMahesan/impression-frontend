@@ -19,19 +19,19 @@
       <input
         [(ngModel)]="code"
         placeholder="Ex : 4839"
-        [disabled]="!!idDepot"
+        [disabled]="!!idDepot()"
       />
-      <button (click)="demarrer()" [disabled]="!!idDepot || !code || chargementCode">
-        {{ chargementCode ? '⏳ Vérification…' : 'Démarrer' }}
+      <button (click)="demarrer()" [disabled]="!!idDepot() || !code || chargementCode()">
+        {{ chargementCode() ? '⏳ Vérification…' : 'Démarrer' }}
       </button>
     </div>
   </div>
 
-  @if (message && !idDepot) {
-    <p class="message">{{ message }}</p>
+  @if (message() && !idDepot()) {
+    <p class="message">{{ message() }}</p>
   }
 
-  @if (idDepot) {
+  @if (idDepot()) {
     <hr />
 
     <!-- Étape 2 : fichiers -->
@@ -41,10 +41,10 @@
         <span>Choisir vos fichiers</span>
       </div>
 
-      <label class="file-label" for="file-input" [class.disabled]="depotValide">
+      <label class="file-label" for="file-input" [class.disabled]="depotValide()">
         <span class="file-icon">📂</span>
         <span>Sélectionner des fichiers…</span>
-        <input id="file-input" type="file" multiple (change)="surChoixFichiers($event)" [disabled]="depotValide" />
+        <input id="file-input" type="file" multiple (change)="surChoixFichiers($event)" [disabled]="depotValide()" />
       </label>
 
       @if (fichiers.length) {
@@ -69,22 +69,22 @@
       </div>
 
       <div class="boutons">
-        <button (click)="envoyerFichiers()" [disabled]="!fichiers.length || chargementUpload || depotValide">
-          {{ chargementUpload ? '⏳ Upload en cours…' : '⬆️ Uploader les fichiers' }}
+        <button (click)="envoyerFichiers()" [disabled]="!fichiers.length || chargementUpload() || depotValide()">
+          {{ chargementUpload() ? '⏳ Upload en cours…' : '⬆️ Uploader les fichiers' }}
         </button>
-        <button (click)="valider()" class="btn-valider" [disabled]="!idDepot || chargementValidation || depotValide">
-          {{ chargementValidation ? '⏳ Validation…' : depotValide ? '✅ Dépôt validé' : '✅ Valider le dépôt' }}
+        <button (click)="valider()" class="btn-valider" [disabled]="!idDepot() || chargementValidation() || depotValide()">
+          {{ chargementValidation() ? '⏳ Validation…' : depotValide() ? '✅ Dépôt validé' : '✅ Valider le dépôt' }}
         </button>
       </div>
     </div>
 
-    @if (message) {
-      <p class="message">{{ message }}</p>
+    @if (message()) {
+      <p class="message">{{ message() }}</p>
     }
 
-    <div class="depot-id-info" [class.valide]="depotValide">
-      <span class="label-id">{{ depotValide ? '✅ Dépôt validé — ID' : 'ID de votre dépôt' }}</span>
-      <code>{{ idDepot }}</code>
+    <div class="depot-id-info" [class.valide]="depotValide()">
+      <span class="label-id">{{ depotValide() ? '✅ Dépôt validé — ID' : 'ID de votre dépôt' }}</span>
+      <code>{{ idDepot() }}</code>
       <p class="hint">Conservez cet identifiant et communiquez-le au magasin.</p>
     </div>
   }
