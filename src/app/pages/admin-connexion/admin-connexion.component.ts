@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApiAdminService } from '../../services/api-admin.service';
@@ -8,7 +9,7 @@ import { ApiAdminService } from '../../services/api-admin.service';
   standalone: true,
   templateUrl: './admin-connexion.component.html',
   styleUrl: './admin-connexion.component.scss',
-  imports: [FormsModule],
+  imports: [CommonModule, FormsModule],
 })
 export class AdminConnexionComponent {
   identifiant = 'admin';
@@ -28,7 +29,6 @@ export class AdminConnexionComponent {
     const base64 = btoa(`${this.identifiant}:${this.motDePasse}`);
     localStorage.setItem('authAdmin', `Basic ${base64}`);
 
-    // On vérifie immédiatement en appelant un endpoint admin
     this.apiAdmin.codeCourant().subscribe({
       next: () => this.routeur.navigateByUrl('/admin/tableau'),
       error: () => {

@@ -28,12 +28,14 @@
     </div>
   </div>
 
-  <p class="message" *ngIf="message">{{ message }}</p>
+  @if (message) {
+    <p class="message">{{ message }}</p>
+  }
 
-  <!-- Étape 2 : fichiers -->
-  <ng-container *ngIf="idDepot">
+  @if (idDepot) {
     <hr />
 
+    <!-- Étape 2 : fichiers -->
     <div class="etape">
       <div class="etape-header">
         <span class="etape-num">2</span>
@@ -46,12 +48,16 @@
         <input id="file-input" type="file" multiple (change)="surChoixFichiers($event)" />
       </label>
 
-      <ul class="file-list" *ngIf="fichiers.length">
-        <li *ngFor="let f of fichiers">
-          <span class="file-name">{{ f.name }}</span>
-          <span class="file-size">{{ (f.size / 1024).toFixed(0) }} Ko</span>
-        </li>
-      </ul>
+      @if (fichiers.length) {
+        <ul class="file-list">
+          @for (f of fichiers; track f.name) {
+            <li>
+              <span class="file-name">{{ f.name }}</span>
+              <span class="file-size">{{ (f.size / 1024).toFixed(0) }} Ko</span>
+            </li>
+          }
+        </ul>
+      }
     </div>
 
     <hr />
@@ -73,11 +79,11 @@
       </div>
     </div>
 
-    <div class="depot-id-info" *ngIf="idDepot">
+    <div class="depot-id-info">
       <span class="label-id">ID de votre dépôt</span>
       <code>{{ idDepot }}</code>
       <p class="hint">Conservez cet identifiant et communiquez-le au magasin.</p>
     </div>
-  </ng-container>
+  }
 
 </div>

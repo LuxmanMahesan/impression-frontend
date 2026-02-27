@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-
 import { ApiDepotService } from '../../services/api-depot.service';
 
 @Component({
@@ -9,7 +7,7 @@ import { ApiDepotService } from '../../services/api-depot.service';
   standalone: true,
   templateUrl: './depot-fichiers.component.html',
   styleUrl: './depot-fichiers.component.scss',
-  imports: [CommonModule],
+  imports: [],
 })
 export class DepotFichierComponent implements OnInit {
   idDepot = '';
@@ -23,7 +21,7 @@ export class DepotFichierComponent implements OnInit {
     private apiDepot: ApiDepotService
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     const param = this.route.snapshot.paramMap.get('idDepot');
     this.idDepot = param ? param : '';
     if (!this.idDepot) {

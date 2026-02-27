@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiDepotService } from '../../services/api-depot.service';
 
@@ -8,7 +7,7 @@ import { ApiDepotService } from '../../services/api-depot.service';
   standalone: true,
   templateUrl: './depot-demarrer.component.html',
   styleUrl: './depot-demarrer.component.scss',
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule],
 })
 export class DepotDemarrerComponent {
   code = '';

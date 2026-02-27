@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ApiAdminService, ReponseDepotAdmin } from '../../services/api-admin.service';
 
 @Component({
@@ -8,35 +8,37 @@ import { ApiAdminService, ReponseDepotAdmin } from '../../services/api-admin.ser
   standalone: true,
   templateUrl: './admin-tableau.component.html',
   styleUrl: './admin-tableau.component.scss',
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule],
 })
-export class AdminTableauComponent {
+export class AdminTableauComponent implements OnInit {
   codeDuJour = '';
   idDepot = '';
   message = '';
   depotCharge: ReponseDepotAdmin | null = null;
 
-  constructor(private api: ApiAdminService) {}
+  constructor(private api: ApiAdminService, private routeur: Router) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     const auth = localStorage.getItem('authAdmin');
     if (!auth) {
-      location.href = '/admin/connexion';
+      this.routeur.navigateByUrl('/admin/connexion');
       return;
     }
 
     this.api.codeCourant().subscribe({
-      next: (r) => (this.codeDuJour = r.code),
+      next: (r) => {
+        this.codeDuJour = r.code;
+      },
       error: () => {
         localStorage.removeItem('authAdmin');
-        location.href = '/admin/connexion';
+        this.routeur.navigateByUrl('/admin/connexion');
       },
     });
   }
 
   deconnexion() {
     localStorage.removeItem('authAdmin');
-    location.href = '/admin/connexion';
+    this.routeur.navigateByUrl('/admin/connexion');
   }
 
   chargerDepot() {

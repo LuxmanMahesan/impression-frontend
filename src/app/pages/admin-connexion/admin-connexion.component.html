@@ -20,6 +20,8 @@
       Se connecter →
     </button>
 
-    <p class="message" *ngIf="message">{{ message }}</p>
+    @if (message) {
+      <p class="message">{{ message }}</p>
+    }
   </div>
 </div>

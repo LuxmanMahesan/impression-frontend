@@ -4,7 +4,10 @@
   <div class="admin-topbar">
     <div>
       <h2>Tableau de bord Admin</h2>
-      <p class="code-jour">Code du jour : <strong>{{ codeDuJour || '…' }}</strong></p>
+      <p class="code-jour">
+        Code du jour :
+        <strong>{{ codeDuJour ? codeDuJour : '…' }}</strong>
+      </p>
     </div>
     <button class="btn-danger" (click)="deconnexion()">🚪 Déconnexion</button>
   </div>
@@ -20,40 +23,48 @@
       <button (click)="chargerDepot()">🔍 Charger</button>
     </div>
 
-    <p class="message" *ngIf="message">{{ message }}</p>
+    @if (message) {
+      <p class="message">{{ message }}</p>
+    }
   </div>
 
   <!-- Résultat -->
-  <div class="card depot-result" *ngIf="depotCharge">
-    <div class="depot-meta">
-      <div>
-        <span class="meta-label">ID</span>
-        <code>{{ depotCharge.idDepot }}</code>
-      </div>
-      <div>
-        <span class="meta-label">Statut</span>
-        <span class="badge" [class.badge-valide]="depotCharge.statut === 'VALIDE'">
-          {{ depotCharge.statut }}
-        </span>
-      </div>
-    </div>
-
-    <hr />
-
-    <h3>Fichiers ({{ depotCharge.fichiers.length }})</h3>
-
-    <p class="vide" *ngIf="!depotCharge.fichiers.length">Aucun fichier dans ce dépôt.</p>
-
-    <ul class="fichier-list" *ngIf="depotCharge.fichiers.length">
-      <li *ngFor="let f of depotCharge.fichiers">
-        <div class="fichier-info">
-          <span class="fichier-nom">{{ f.nom }}</span>
-          <span class="fichier-meta">{{ f.typeMime }} · {{ (f.taille / 1024).toFixed(0) }} Ko</span>
-          <span class="fichier-id">{{ f.idFichier }}</span>
+  @if (depotCharge) {
+    <div class="card depot-result">
+      <div class="depot-meta">
+        <div>
+          <span class="meta-label">ID</span>
+          <code>{{ depotCharge.idDepot }}</code>
         </div>
-        <button (click)="telechargerFichier(f.idFichier, f.nom)">⬇️ Télécharger</button>
-      </li>
-    </ul>
-  </div>
+        <div>
+          <span class="meta-label">Statut</span>
+          <span class="badge" [class.badge-valide]="depotCharge.statut === 'VALIDE'">
+            {{ depotCharge.statut }}
+          </span>
+        </div>
+      </div>
+
+      <hr />
+
+      <h3>Fichiers ({{ depotCharge.fichiers.length }})</h3>
+
+      @if (!depotCharge.fichiers.length) {
+        <p class="vide">Aucun fichier dans ce dépôt.</p>
+      } @else {
+        <ul class="fichier-list">
+          @for (f of depotCharge.fichiers; track f.idFichier) {
+            <li>
+              <div class="fichier-info">
+                <span class="fichier-nom">{{ f.nom }}</span>
+                <span class="fichier-meta">{{ f.typeMime }} · {{ (f.taille / 1024).toFixed(0) }} Ko</span>
+                <span class="fichier-id">{{ f.idFichier }}</span>
+              </div>
+              <button (click)="telechargerFichier(f.idFichier, f.nom)">⬇️ Télécharger</button>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+  }
 
 </div>
