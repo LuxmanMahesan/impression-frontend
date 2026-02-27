@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApiAdminService, ReponseDepotAdmin } from '../../services/api-admin.service';
@@ -11,10 +11,10 @@ import { ApiAdminService, ReponseDepotAdmin } from '../../services/api-admin.ser
   imports: [FormsModule],
 })
 export class AdminTableauComponent implements OnInit {
-  codeDuJour = '';
+  codeDuJour = signal('…');
   idDepot = '';
-  message = '';
-  depotCharge: ReponseDepotAdmin | null = null;
+  message = signal('');
+  depotCharge = signal<ReponseDepotAdmin | null>(null);
 
   constructor(private api: ApiAdminService, private routeur: Router) {}
 
@@ -26,9 +26,7 @@ export class AdminTableauComponent implements OnInit {
     }
 
     this.api.codeCourant().subscribe({
-      next: (r) => {
-        this.codeDuJour = r.code;
-      },
+      next: (r) => this.codeDuJour.set(r.code),
       error: () => {
         localStorage.removeItem('authAdmin');
         this.routeur.navigateByUrl('/admin/connexion');
@@ -42,25 +40,25 @@ export class AdminTableauComponent implements OnInit {
   }
 
   chargerDepot() {
-    this.message = '';
-    this.depotCharge = null;
+    this.message.set('');
+    this.depotCharge.set(null);
 
     if (!this.idDepot) {
-      this.message = 'Entre un ID de dépôt.';
+      this.message.set('Entre un ID de dépôt.');
       return;
     }
 
     this.api.depot(this.idDepot).subscribe({
       next: (d) => {
-        this.depotCharge = d;
-        this.message = 'Dépôt chargé ✅';
+        this.depotCharge.set(d);
+        this.message.set('Dépôt chargé ✅');
       },
-      error: () => (this.message = 'Dépôt introuvable / erreur serveur ❌'),
+      error: () => this.message.set('Dépôt introuvable / erreur serveur ❌'),
     });
   }
 
   telechargerFichier(idFichier: string, nomOriginal: string) {
-    this.message = '';
+    this.message.set('');
     if (!this.idDepot) return;
 
     this.api.telechargerFichier(this.idDepot, idFichier).subscribe({
@@ -71,9 +69,9 @@ export class AdminTableauComponent implements OnInit {
         a.download = nomOriginal || `fichier-${idFichier}`;
         a.click();
         window.URL.revokeObjectURL(url);
-        this.message = 'Téléchargement lancé ✅';
+        this.message.set('Téléchargement lancé ✅');
       },
-      error: () => (this.message = 'Erreur téléchargement ❌'),
+      error: () => this.message.set('Erreur téléchargement ❌'),
     });
   }
 }

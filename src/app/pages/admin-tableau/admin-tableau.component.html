@@ -5,8 +5,7 @@
     <div>
       <h2>Tableau de bord Admin</h2>
       <p class="code-jour">
-        Code du jour :
-        <strong>{{ codeDuJour ? codeDuJour : '…' }}</strong>
+        Code du jour : <strong>{{ codeDuJour() }}</strong>
       </p>
     </div>
     <button class="btn-danger" (click)="deconnexion()">🚪 Déconnexion</button>
@@ -23,36 +22,36 @@
       <button (click)="chargerDepot()">🔍 Charger</button>
     </div>
 
-    @if (message) {
-      <p class="message">{{ message }}</p>
+    @if (message()) {
+      <p class="message">{{ message() }}</p>
     }
   </div>
 
   <!-- Résultat -->
-  @if (depotCharge) {
+  @if (depotCharge()) {
     <div class="card depot-result">
       <div class="depot-meta">
         <div>
           <span class="meta-label">ID</span>
-          <code>{{ depotCharge.idDepot }}</code>
+          <code>{{ depotCharge()!.idDepot }}</code>
         </div>
         <div>
           <span class="meta-label">Statut</span>
-          <span class="badge" [class.badge-valide]="depotCharge.statut === 'VALIDE'">
-            {{ depotCharge.statut }}
+          <span class="badge" [class.badge-valide]="depotCharge()!.statut === 'VALIDE'">
+            {{ depotCharge()!.statut }}
           </span>
         </div>
       </div>
 
       <hr />
 
-      <h3>Fichiers ({{ depotCharge.fichiers.length }})</h3>
+      <h3>Fichiers ({{ depotCharge()!.fichiers.length }})</h3>
 
-      @if (!depotCharge.fichiers.length) {
+      @if (!depotCharge()!.fichiers.length) {
         <p class="vide">Aucun fichier dans ce dépôt.</p>
       } @else {
         <ul class="fichier-list">
-          @for (f of depotCharge.fichiers; track f.idFichier) {
+          @for (f of depotCharge()!.fichiers; track f.idFichier) {
             <li>
               <div class="fichier-info">
                 <span class="fichier-nom">{{ f.nom }}</span>
