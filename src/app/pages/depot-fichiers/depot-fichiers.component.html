@@ -11,10 +11,10 @@
   <hr />
 
   <div class="etape">
-    <label class="file-label" for="file-input">
+    <label class="file-label" for="file-input" [class.disabled]="depotValide">
       <span class="file-icon">📂</span>
       <span>Sélectionner des fichiers…</span>
-      <input id="file-input" type="file" multiple (change)="surChoixFichiers($event)" />
+      <input id="file-input" type="file" multiple (change)="surChoixFichiers($event)" [disabled]="depotValide" />
     </label>
 
     @if (fichiers.length) {
@@ -32,11 +32,11 @@
   <hr />
 
   <div class="boutons">
-    <button (click)="uploader()" [disabled]="!fichiers.length || enCours">
+    <button (click)="uploader()" [disabled]="!fichiers.length || enCours || depotValide">
       {{ enCours ? '⏳ Upload en cours…' : '⬆️ Uploader' }}
     </button>
-    <button class="btn-valider" (click)="valider()" [disabled]="!idDepot || enCours">
-      ✅ Valider le dépôt
+    <button class="btn-valider" (click)="valider()" [disabled]="!idDepot || enCours || depotValide">
+      {{ depotValide ? '✅ Dépôt validé' : '✅ Valider le dépôt' }}
     </button>
   </div>
 

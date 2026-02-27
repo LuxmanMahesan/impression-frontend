@@ -15,24 +15,36 @@ export class DepotDemarrerComponent {
   message = '';
   fichiers: File[] = [];
 
+  chargementCode = false;
+  chargementUpload = false;
+  chargementValidation = false;
+  depotValide = false;
+
   constructor(private apiDepot: ApiDepotService) {}
 
   demarrer() {
     this.message = '';
     this.idDepot = '';
     this.fichiers = [];
+    this.depotValide = false;
 
     if (!this.code) {
       this.message = 'Entre le code du jour.';
       return;
     }
 
+    this.chargementCode = true;
+
     this.apiDepot.demarrerDepot(this.code).subscribe({
       next: (r) => {
         this.idDepot = r.idDepot;
         this.message = 'Dépôt démarré ✅';
+        this.chargementCode = false;
       },
-      error: () => (this.message = 'Code invalide ❌'),
+      error: () => {
+        this.message = 'Code invalide ❌';
+        this.chargementCode = false;
+      },
     });
   }
 
@@ -53,20 +65,37 @@ export class DepotDemarrerComponent {
       return;
     }
 
+    this.chargementUpload = true;
+
     this.apiDepot.televerserFichiers(this.idDepot, this.fichiers).subscribe({
-      next: () => (this.message = 'Upload terminé ✅'),
-      error: () => (this.message = 'Erreur upload ❌'),
+      next: () => {
+        this.message = 'Upload terminé ✅';
+        this.chargementUpload = false;
+      },
+      error: () => {
+        this.message = 'Erreur upload ❌';
+        this.chargementUpload = false;
+      },
     });
   }
 
   valider() {
     this.message = '';
 
-    if (!this.idDepot) return;
+    if (!this.idDepot || this.depotValide) return;
+
+    this.chargementValidation = true;
 
     this.apiDepot.validerDepot(this.idDepot).subscribe({
-      next: () => (this.message = 'Dépôt validé ✅ Donne cet ID au magasin.'),
-      error: () => (this.message = 'Erreur validation ❌'),
+      next: () => {
+        this.depotValide = true;
+        this.chargementValidation = false;
+        this.message = 'Dépôt validé ✅ Communiquez cet identifiant au magasin.';
+      },
+      error: () => {
+        this.chargementValidation = false;
+        this.message = 'Erreur validation ❌';
+      },
     });
   }
 }

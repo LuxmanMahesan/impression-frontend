@@ -14,6 +14,7 @@ export class DepotFichierComponent implements OnInit {
   fichiers: File[] = [];
   message = '';
   enCours = false;
+  depotValide = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -63,14 +64,15 @@ export class DepotFichierComponent implements OnInit {
   valider() {
     this.message = '';
 
-    if (!this.idDepot) return;
+    if (!this.idDepot || this.depotValide) return;
 
     this.enCours = true;
 
     this.apiDepot.validerDepot(this.idDepot).subscribe({
       next: () => {
         this.enCours = false;
-        this.message = 'Dépôt validé ✅ (donne cet ID au magasin)';
+        this.depotValide = true;
+        this.message = 'Dépôt validé ✅ Communiquez cet ID au magasin.';
       },
       error: () => {
         this.enCours = false;
