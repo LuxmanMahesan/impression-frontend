@@ -70,19 +70,22 @@
 
     <hr />
 
-    <!-- Étape 3 : actions -->
+    <!-- Étape 3 : valider -->
     <div class="etape">
       <div class="etape-header">
         <span class="etape-num">3</span>
-        <span>Envoyer et valider</span>
+        <span>Valider le dépôt</span>
       </div>
 
       <div class="boutons">
-        <button (click)="envoyerFichiers()" [disabled]="!fichiers.length || chargementUpload() || depotValide()">
-          {{ chargementUpload() ? '⏳ Upload en cours…' : '⬆️ Uploader les fichiers' }}
-        </button>
         <button (click)="valider()" class="btn-valider" [disabled]="!idDepot() || chargementValidation() || depotValide()">
-          {{ chargementValidation() ? '⏳ Validation…' : depotValide() ? '✅ Dépôt validé' : '✅ Valider le dépôt' }}
+          @if (chargementValidation()) {
+            ⏳ {{ fichiers.length ? 'Envoi en cours…' : 'Validation…' }}
+          } @else if (depotValide()) {
+            ✅ Dépôt validé
+          } @else {
+            ✅ Valider le dépôt
+          }
         </button>
       </div>
     </div>

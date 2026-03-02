@@ -16,7 +16,6 @@ export class DepotDemarrerComponent {
   fichiers: File[] = [];
 
   chargementCode = signal(false);
-  chargementUpload = signal(false);
   chargementValidation = signal(false);
   depotValide = signal(false);
 
@@ -40,14 +39,8 @@ export class DepotDemarrerComponent {
     this.apiDepot.demarrerDepot(this.code.trim()).subscribe({
       next: (r: any) => {
         const id = r.idDepot || r.id || '';
-        console.log('Dépôt créé:', id);
         this.idDepot.set(id);
         this.chargementCode.set(false);
-        if (id) {
-          this.message.set('Dépôt démarré ✅');
-        } else {
-          this.message.set('Réponse serveur inattendue ❌');
-        }
         this.cdr.detectChanges();
       },
       error: (err: any) => {
@@ -64,35 +57,6 @@ export class DepotDemarrerComponent {
     this.fichiers = input.files ? Array.from(input.files) : [];
   }
 
-  envoyerFichiers() {
-    this.message.set('');
-
-    if (!this.idDepot()) {
-      this.message.set('Démarre le dépôt avant.');
-      return;
-    }
-    if (!this.fichiers.length) {
-      this.message.set('Choisis au moins un fichier.');
-      return;
-    }
-
-    this.chargementUpload.set(true);
-
-    this.apiDepot.televerserFichiers(this.idDepot(), this.fichiers).subscribe({
-      next: () => {
-        this.message.set('Upload terminé ✅');
-        this.chargementUpload.set(false);
-        this.cdr.detectChanges();
-      },
-      error: (err: any) => {
-        console.error('Erreur upload:', err);
-        this.message.set('Erreur upload ❌');
-        this.chargementUpload.set(false);
-        this.cdr.detectChanges();
-      },
-    });
-  }
-
   valider() {
     this.message.set('');
 
@@ -100,19 +64,35 @@ export class DepotDemarrerComponent {
 
     this.chargementValidation.set(true);
 
-    this.apiDepot.validerDepot(this.idDepot()).subscribe({
-      next: () => {
-        this.depotValide.set(true);
-        this.chargementValidation.set(false);
-        this.message.set('Dépôt validé ✅ Communiquez cet identifiant au magasin.');
-        this.cdr.detectChanges();
-      },
-      error: (err: any) => {
-        console.error('Erreur validation:', err);
-        this.chargementValidation.set(false);
-        this.message.set('Erreur validation ❌');
-        this.cdr.detectChanges();
-      },
-    });
+    const doValider = () => {
+      this.apiDepot.validerDepot(this.idDepot()).subscribe({
+        next: () => {
+          this.depotValide.set(true);
+          this.chargementValidation.set(false);
+          this.message.set('Dépôt validé ✅ Communiquez cet identifiant au magasin.');
+          this.cdr.detectChanges();
+        },
+        error: (err: any) => {
+          console.error('Erreur validation:', err);
+          this.chargementValidation.set(false);
+          this.message.set('Erreur validation ❌');
+          this.cdr.detectChanges();
+        },
+      });
+    };
+
+    if (this.fichiers.length > 0) {
+      this.apiDepot.televerserFichiers(this.idDepot(), this.fichiers).subscribe({
+        next: () => doValider(),
+        error: (err: any) => {
+          console.error('Erreur upload:', err);
+          this.chargementValidation.set(false);
+          this.message.set('Erreur upload des fichiers ❌');
+          this.cdr.detectChanges();
+        },
+      });
+    } else {
+      doValider();
+    }
   }
 }
