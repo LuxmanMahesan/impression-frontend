@@ -15,6 +15,8 @@ export class DepotDemarrerComponent {
   message = signal('');
   fichiers: File[] = [];
 
+  readonly MAX_FICHIERS = 10;
+
   chargementCode = signal(false);
   chargementValidation = signal(false);
   depotValide = signal(false);
@@ -24,13 +26,21 @@ export class DepotDemarrerComponent {
     private cdr: ChangeDetectorRef,
   ) {}
 
+  /** Filtre le code pour n'accepter que des chiffres, max 4 caractères */
+  surSaisieCode(event: Event) {
+    const input = event.target as HTMLInputElement;
+    // Ne garder que les chiffres, tronquer à 4
+    this.code = input.value.replace(/\D/g, '').slice(0, 4);
+    input.value = this.code;
+  }
+
   demarrer() {
     this.message.set('');
     this.fichiers = [];
     this.depotValide.set(false);
 
-    if (!this.code) {
-      this.message.set('Entre le code du jour.');
+    if (!this.code || this.code.length !== 4) {
+      this.message.set('Entrez un code à 4 chiffres.');
       return;
     }
 
@@ -52,9 +62,47 @@ export class DepotDemarrerComponent {
     });
   }
 
+  /**
+   * Accumule les fichiers sélectionnés au lieu de les écraser.
+   * Plafonne à MAX_FICHIERS (10).
+   */
   surChoixFichiers(event: Event) {
     const input = event.target as HTMLInputElement;
-    this.fichiers = input.files ? Array.from(input.files) : [];
+    const nouveaux = input.files ? Array.from(input.files) : [];
+
+    if (!nouveaux.length) return;
+
+    const placesRestantes = this.MAX_FICHIERS - this.fichiers.length;
+
+    if (placesRestantes <= 0) {
+      this.message.set(`Maximum ${this.MAX_FICHIERS} fichiers atteint.`);
+      input.value = '';
+      return;
+    }
+
+    // Filtrer les doublons (même nom + même taille)
+    const aAjouter = nouveaux.filter(
+      (n) => !this.fichiers.some((f) => f.name === n.name && f.size === n.size)
+    );
+
+    if (aAjouter.length > placesRestantes) {
+      this.fichiers = [...this.fichiers, ...aAjouter.slice(0, placesRestantes)];
+      this.message.set(
+        `Limite de ${this.MAX_FICHIERS} fichiers atteinte. Certains fichiers n'ont pas été ajoutés.`
+      );
+    } else {
+      this.fichiers = [...this.fichiers, ...aAjouter];
+      this.message.set('');
+    }
+
+    // Reset l'input pour pouvoir resélectionner les mêmes fichiers si besoin
+    input.value = '';
+  }
+
+  /** Retire un fichier de la liste par son index */
+  retirerFichier(index: number) {
+    this.fichiers = this.fichiers.filter((_, i) => i !== index);
+    this.message.set('');
   }
 
   valider() {

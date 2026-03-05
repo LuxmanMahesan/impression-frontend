@@ -129,6 +129,16 @@
     background: var(--gray-100);
     border-radius: 8px;
     font-size: .88rem;
+    gap: 8px;
+  }
+
+  .file-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+    gap: 8px;
   }
 
   .file-name {
@@ -137,13 +147,41 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width: 340px;
+    min-width: 0;
   }
 
   .file-size {
     color: var(--gray-500);
     font-size: .82rem;
     flex-shrink: 0;
+  }
+}
+
+/* ── Bouton retirer fichier ──────────────────────────────── */
+.btn-retirer {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--gray-300);
+  color: var(--gray-700);
+  font-size: .82rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: none;
+  transition: background .15s, color .15s;
+  flex-shrink: 0;
+
+  &:hover {
+    background: var(--danger);
+    color: #fff;
+    transform: none;
+    box-shadow: none;
   }
 }
 

@@ -17,11 +17,15 @@
     </div>
     <div class="field-row">
       <input
-        [(ngModel)]="code"
+        [ngModel]="code"
+        (input)="surSaisieCode($event)"
         placeholder="Ex : 4839"
+        inputmode="numeric"
+        pattern="[0-9]*"
+        maxlength="4"
         [disabled]="!!idDepot()"
       />
-      <button (click)="demarrer()" [disabled]="!!idDepot() || !code || chargementCode()">
+      <button (click)="demarrer()" [disabled]="!!idDepot() || code.length !== 4 || chargementCode()">
         {{ chargementCode() ? '⏳ Vérification…' : 'Démarrer' }}
       </button>
     </div>
@@ -38,30 +42,41 @@
     <div class="etape">
       <div class="etape-header">
         <span class="etape-num">2</span>
-        <span>Choisir vos fichiers</span>
+        <span>Choisir vos fichiers ({{ fichiers.length }}/{{ MAX_FICHIERS }})</span>
       </div>
 
-      <label class="file-label" for="file-input" [class.disabled]="depotValide()">
-        <span class="file-icon">📂</span>
-        <span>Sélectionner des fichiers…</span>
-        <input
-          id="file-input"
-          type="file"
-          multiple
-          accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png,.bmp,.tiff,.tif,.gif,.webp,.txt,.odt,.ods,.odp"
-          (change)="surChoixFichiers($event)"
-          [disabled]="depotValide()"
-        />
-      </label>
+      @if (fichiers.length < MAX_FICHIERS && !depotValide()) {
+        <label class="file-label" for="file-input">
+          <span class="file-icon">📂</span>
+          <span>Sélectionner des fichiers…</span>
+          <input
+            id="file-input"
+            type="file"
+            multiple
+            accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png,.bmp,.tiff,.tif,.gif,.webp,.txt,.odt,.ods,.odp"
+            (change)="surChoixFichiers($event)"
+          />
+        </label>
+      } @else if (!depotValide()) {
+        <div class="file-label disabled">
+          <span class="file-icon">📂</span>
+          <span>Limite de {{ MAX_FICHIERS }} fichiers atteinte</span>
+        </div>
+      }
 
       <p class="hint-format">Formats acceptés : PDF, Word, Excel, PowerPoint, images (JPG, PNG…), texte</p>
 
       @if (fichiers.length) {
         <ul class="file-list">
-          @for (f of fichiers; track f.name) {
+          @for (f of fichiers; track f.name + f.size; let i = $index) {
             <li>
-              <span class="file-name">{{ f.name }}</span>
-              <span class="file-size">{{ (f.size / 1024).toFixed(0) }} Ko</span>
+              <div class="file-info-row">
+                <span class="file-name">{{ f.name }}</span>
+                <span class="file-size">{{ (f.size / 1024).toFixed(0) }} Ko</span>
+              </div>
+              @if (!depotValide()) {
+                <button class="btn-retirer" (click)="retirerFichier(i)" type="button" title="Retirer ce fichier">✕</button>
+              }
             </li>
           }
         </ul>
